@@ -20,7 +20,7 @@ export default function SignIn() {
         <div className="w-full h-[94vh] flex items-center -mt-10">
             <div className="relative max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-slate-200 dark:bg-black">
                 <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-                    Welcome to Douglas
+                    Welcome back!
                 </h2>
 
                 <form className="my-8" onSubmit={handleSubmit}>

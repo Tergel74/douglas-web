@@ -1,25 +1,83 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { cn } from "@/lib/utils";
-import {
-    IconBrandGithub,
-    IconBrandGoogle,
-    IconBrandOnlyfans,
-} from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function SignUp() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const notifyFormIncomplete = () => {
+        const darkMode = document.documentElement.classList.contains("dark");
+
+        toast("Please fill in all the fields", {
+            icon: "🖋️",
+            style: {
+                borderRadius: "20px",
+                background: darkMode ? "white" : "#7c3aed",
+                color: darkMode ? "black" : "white",
+            },
+        });
+    };
+    const notifyPasswordNotMatch = () => {
+        const darkMode = document.documentElement.classList.contains("dark");
+
+        toast("Please match two passwords", {
+            icon: "🔏",
+            style: {
+                borderRadius: "20px",
+                background: darkMode ? "white" : "#7c3aed",
+                color: darkMode ? "black" : "white",
+            },
+        });
+    };
+    const [form, setForm] = useState({
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
+    });
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form submitted");
+        if (
+            !form.firstname ||
+            !form.lastname ||
+            !form.email ||
+            !form.password ||
+            !form.repeatPassword
+        ) {
+            notifyFormIncomplete();
+        } else {
+            if (form.password != form.repeatPassword) {
+                notifyPasswordNotMatch();
+            } else {
+                setIsSubmitting(true);
+
+                try {
+                    // code to sign up
+                } catch (error) {
+                    console.log(error);
+                    setForm({
+                        firstname: "",
+                        lastname: "",
+                        email: "",
+                        password: "",
+                        repeatPassword: "",
+                    });
+                } finally {
+                    setIsSubmitting(false);
+                }
+            }
+        }
     };
     return (
         <div className="w-full h-[94vh] flex items-center -mt-10">
             <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-slate-200 dark:bg-black">
                 <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-                    Welcome to Douglas
+                    Welcome to Douglas!
                 </h2>
 
                 <form className="my-8" onSubmit={handleSubmit}>
@@ -30,6 +88,13 @@ export default function SignUp() {
                                 id="firstname"
                                 placeholder="Tergel"
                                 type="text"
+                                value={form.firstname}
+                                onChange={(e: any) =>
+                                    setForm({
+                                        ...form,
+                                        firstname: e.target.value,
+                                    })
+                                }
                             />
                         </LabelInputContainer>
                         <LabelInputContainer>
@@ -38,6 +103,13 @@ export default function SignUp() {
                                 id="lastname"
                                 placeholder="Bat"
                                 type="text"
+                                value={form.lastname}
+                                onChange={(e: any) =>
+                                    setForm({
+                                        ...form,
+                                        lastname: e.target.value,
+                                    })
+                                }
                             />
                         </LabelInputContainer>
                     </div>
@@ -47,6 +119,13 @@ export default function SignUp() {
                             id="email"
                             placeholder="douglas@gmail.com"
                             type="email"
+                            value={form.email}
+                            onChange={(e: any) =>
+                                setForm({
+                                    ...form,
+                                    email: e.target.value,
+                                })
+                            }
                         />
                     </LabelInputContainer>
                     <LabelInputContainer className="mb-4">
@@ -55,6 +134,13 @@ export default function SignUp() {
                             id="password"
                             placeholder="••••••••"
                             type="password"
+                            value={form.password}
+                            onChange={(e: any) =>
+                                setForm({
+                                    ...form,
+                                    password: e.target.value,
+                                })
+                            }
                         />
                     </LabelInputContainer>
                     <LabelInputContainer className="mb-8">
@@ -62,12 +148,19 @@ export default function SignUp() {
                         <Input
                             id="repeatPassword"
                             placeholder="••••••••"
-                            type="repeatPassword"
+                            type="password"
+                            value={form.repeatPassword}
+                            onChange={(e: any) =>
+                                setForm({
+                                    ...form,
+                                    repeatPassword: e.target.value,
+                                })
+                            }
                         />
                     </LabelInputContainer>
 
                     <button
-                        className="bg-gradient-to-br relative group/btn from-purple-600 dark:from-zinc-900 dark:to-zinc-900 to-purple-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                        className="bg-gradient-to-br relative group/btn from-primary dark:from-zinc-900 dark:to-zinc-900 to-primary block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                         type="submit"
                     >
                         Sign up &rarr;
@@ -90,6 +183,7 @@ export default function SignUp() {
                     </div>
                 </form>
             </div>
+            <Toaster position="top-right" />
         </div>
     );
 }

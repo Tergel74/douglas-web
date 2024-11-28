@@ -27,8 +27,8 @@ export const FloatingNav = ({
 }) => {
     const { scrollYProgress } = useScroll();
 
-    const [visible, setVisible] = useState(true);
-    // const visible = true;
+    // const [visible, setVisible] = useState(true);
+    const visible = true;
 
     const [theme, setTheme] = useState<string>();
 
@@ -37,28 +37,31 @@ export const FloatingNav = ({
     //     console.log(theme);
     // };
 
-    useMotionValueEvent(scrollYProgress, "change", (current) => {
-        // Check if current is not undefined and is a number
-        if (typeof current === "number") {
-            let direction = current! - scrollYProgress.getPrevious()!;
+    // useMotionValueEvent(scrollYProgress, "change", (current) => {
+    //     // Check if current is not undefined and is a number
+    //     if (typeof current === "number") {
+    //         let direction = current! - scrollYProgress.getPrevious()!;
 
-            // if (scrollYProgress.get() < 0.05) {
-            //     setVisible(false);
-            // } else {
-            if (direction < 0) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
-            // }
-        }
-    });
+    //         // if (scrollYProgress.get() < 0.05) {
+    //         //     setVisible(false);
+    //         // } else {
+    //         if (direction < 0) {
+    //             setVisible(true);
+    //         } else {
+    //             setVisible(false);
+    //         }
+    //         // }
+    //     }
+    // });
 
     useEffect(() => {
         let storageTheme;
         storageTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.classList.toggle(
+            "dark",
+            storageTheme === "dark"
+        );
         setTheme(storageTheme as string);
-        document.documentElement.classList.toggle("dark", theme === "dark");
     }, [theme]);
 
     return (

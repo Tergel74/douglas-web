@@ -3,7 +3,6 @@ import "./globals.css";
 import { FloatingNav } from "../components/ui/floating-navbar";
 import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 import { useState } from "react";
-import useLocalStorage from "@/lib/storage";
 
 export const metadata: Metadata = {
     title: "Douglas",
@@ -35,7 +34,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className="bg-background">
-                <FloatingNav navItems={navItems} signInLink="/auth/sign-up" />
+                <FloatingNav navItems={navItems} signInLink="/auth/sign-in" />
                 {children}
             </body>
         </html>

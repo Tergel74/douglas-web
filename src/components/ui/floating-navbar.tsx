@@ -98,7 +98,7 @@ export const FloatingNav = ({
                     className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
                     href={signInLink}
                 >
-                    <span>Login</span>
+                    <span>Sign in</span>
                     <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-purple-600 to-transparent  h-px" />
                 </Link>
                 <Lightbulb

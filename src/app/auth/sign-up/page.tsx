@@ -4,28 +4,25 @@ import React, { useEffect, useState } from "react";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { cn } from "@/lib/utils";
-import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import {
+    IconBrandGithub,
+    IconBrandGoogle,
+    IconArrowLeft,
+} from "@tabler/icons-react";
 import toast, { Toaster } from "react-hot-toast";
+import { signUp } from "@/api/repositories/auth.repository";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignUp() {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const notifyFormIncomplete = () => {
+    const [formWarning, setFormWarning] = useState("");
+    const router = useRouter();
+    const notify = (message: string, icon?: string) => {
         const darkMode = document.documentElement.classList.contains("dark");
 
-        toast("Please fill in all the fields", {
-            icon: "🖋️",
-            style: {
-                borderRadius: "20px",
-                background: darkMode ? "white" : "#7c3aed",
-                color: darkMode ? "black" : "white",
-            },
-        });
-    };
-    const notifyPasswordNotMatch = () => {
-        const darkMode = document.documentElement.classList.contains("dark");
-
-        toast("Please match two passwords", {
-            icon: "🔏",
+        toast(message, {
+            icon: icon,
             style: {
                 borderRadius: "20px",
                 background: darkMode ? "white" : "#7c3aed",
@@ -40,7 +37,7 @@ export default function SignUp() {
         password: "",
         repeatPassword: "",
     });
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (
             !form.firstname ||
@@ -49,17 +46,20 @@ export default function SignUp() {
             !form.password ||
             !form.repeatPassword
         ) {
-            notifyFormIncomplete();
+            notify("Please fill in all the fields", "🖋️");
         } else {
             if (form.password != form.repeatPassword) {
-                notifyPasswordNotMatch();
+                notify("Please match two passwords", "🔏");
             } else {
                 setIsSubmitting(true);
 
                 try {
-                    // code to sign up
-                } catch (error) {
-                    console.log(error);
+                    const userData = await signUp(
+                        form.firstname,
+                        form.lastname,
+                        form.email,
+                        form.password
+                    );
                     setForm({
                         firstname: "",
                         lastname: "",
@@ -67,6 +67,12 @@ export default function SignUp() {
                         password: "",
                         repeatPassword: "",
                     });
+                    localStorage.setItem("user", JSON.stringify(userData));
+                    router.replace("/");
+                } catch (error: any) {
+                    // console.log(error);
+                    setFormWarning(error.message);
+                    notify(error.message, "🔏");
                 } finally {
                     setIsSubmitting(false);
                 }
@@ -180,10 +186,13 @@ export default function SignUp() {
                             </span>
                             <BottomGradient />
                         </button>
+                        <Link href={"/auth/sign-in"}>
+                            <IconArrowLeft className="h-6 w-6 mt-2 -mb-6 text-neutral-800 dark:text-neutral-300" />
+                        </Link>
                     </div>
                 </form>
             </div>
-            <Toaster position="top-right" />
+            <Toaster position="top-center" />
         </div>
     );
 }

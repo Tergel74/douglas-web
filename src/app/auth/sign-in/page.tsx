@@ -1,20 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { cn } from "@/lib/utils";
-import {
-    IconBrandGithub,
-    IconBrandGoogle,
-    IconBrandOnlyfans,
-} from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
+import { signIn } from "@/api/repositories/auth.repository";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function SignIn() {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const router = useRouter();
+    const { setIsLoggedIn, setUser } = useGlobalContext();
+    const notify = (message: string, icon?: string) => {
+        const darkMode = document.documentElement.classList.contains("dark");
+
+        toast(message, {
+            icon: icon,
+            style: {
+                borderRadius: "20px",
+                background: darkMode ? "white" : "#7c3aed",
+                color: darkMode ? "black" : "white",
+            },
+        });
+    };
+    const [form, setForm] = useState({
+        email: "",
+        password: "",
+    });
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form submitted");
+        if (!form.email || !form.password) {
+            notify("Please fill in all the fields", "🖋️");
+        } else {
+            if (form.password.length < 6) {
+                notify(
+                    "The password must be a string with at least 6 characters",
+                    "🔏"
+                );
+            } else {
+                try {
+                    const userData = await signIn(form.email, form.password);
+                    setForm({
+                        email: "",
+                        password: "",
+                    });
+                    localStorage.setItem("user", JSON.stringify(userData));
+                    setUser(userData);
+                    setIsLoggedIn(true);
+                    router.replace("/");
+                } catch (error: any) {
+                    notify(error.message, "🔏");
+                }
+            }
+        }
     };
     return (
         <div className="w-full h-[94vh] flex items-center -mt-10">
@@ -30,6 +71,13 @@ export default function SignIn() {
                             id="email"
                             placeholder="douglas@gmail.com"
                             type="email"
+                            value={form.email}
+                            onChange={(e: any) =>
+                                setForm({
+                                    ...form,
+                                    email: e.target.value,
+                                })
+                            }
                         />
                     </LabelInputContainer>
                     <LabelInputContainer className="mb-4">
@@ -38,6 +86,13 @@ export default function SignIn() {
                             id="password"
                             placeholder="••••••••"
                             type="password"
+                            value={form.password}
+                            onChange={(e: any) =>
+                                setForm({
+                                    ...form,
+                                    password: e.target.value,
+                                })
+                            }
                         />
                     </LabelInputContainer>
                     <button
@@ -72,6 +127,7 @@ export default function SignIn() {
                     </Link>
                 </div>
             </div>
+            <Toaster position="top-center" />
         </div>
     );
 }

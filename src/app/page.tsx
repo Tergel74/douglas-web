@@ -9,10 +9,10 @@ export default function Home() {
     const { isLoading, isLoggedIn } = useGlobalContext();
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (!isLoading && !isLoggedIn) {
             router.replace("/auth/sign-in");
         }
-    });
+    }, [isLoggedIn]);
 
     return <div className="h-[110vh] w-full">Solve</div>;
 }

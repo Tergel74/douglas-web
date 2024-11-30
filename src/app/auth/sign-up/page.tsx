@@ -13,11 +13,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { signUp } from "@/api/repositories/auth.repository";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function SignUp() {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formWarning, setFormWarning] = useState("");
     const router = useRouter();
+    const { setUser, setIsLoggedIn } = useGlobalContext();
     const notify = (message: string, icon?: string) => {
         const darkMode = document.documentElement.classList.contains("dark");
 
@@ -51,8 +51,6 @@ export default function SignUp() {
             if (form.password != form.repeatPassword) {
                 notify("Please match two passwords", "🔏");
             } else {
-                setIsSubmitting(true);
-
                 try {
                     const userData = await signUp(
                         form.firstname,
@@ -68,13 +66,11 @@ export default function SignUp() {
                         repeatPassword: "",
                     });
                     localStorage.setItem("user", JSON.stringify(userData));
+                    setUser(userData);
+                    setIsLoggedIn(true);
                     router.replace("/");
                 } catch (error: any) {
-                    // console.log(error);
-                    setFormWarning(error.message);
                     notify(error.message, "🔏");
-                } finally {
-                    setIsSubmitting(false);
                 }
             }
         }

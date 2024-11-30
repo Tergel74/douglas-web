@@ -32,7 +32,7 @@ export async function post(endpoint: string, data: {}) {
             throw responseData;
         }
     } catch (err) {
-        console.error("Error posting data:", err);
+        // console.error("Error posting data:", err);
         throw err;
     }
 }

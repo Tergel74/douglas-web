@@ -22,11 +22,11 @@ export const FloatingNav = ({
     className?: string;
     signInLink: string;
 }) => {
-    const { isLoggedIn, user } = useGlobalContext();
-    const { scrollYProgress } = useScroll();
+    const { isLoggedIn, setIsLoggedIn } = useGlobalContext();
+    // const { scrollYProgress } = useScroll();
     const router = useRouter();
 
-    // const [visible, setVisible] = useState(true);
+    // const [visible, setVisible] = useState(isLoggedIn);
 
     // const changeTheme = (dark: boolean) => {
     //     setTheme(!dark);
@@ -51,6 +51,7 @@ export const FloatingNav = ({
     // });
     const logOut = async () => {
         await signOut();
+        setIsLoggedIn(false);
         router.replace("/auth/sign-in");
     };
 

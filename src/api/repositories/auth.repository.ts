@@ -12,8 +12,19 @@ export async function signIn(email: string, password: string) {
             password
         );
         const idToken = await userCredential.user.getIdToken();
+        const refreshToken = userCredential.user.refreshToken;
 
-        const response = await post("/auth/sign-in", { idToken: idToken });
+        setCookie("idToken", idToken, {
+            secure: true,
+            httpOnly: true,
+            maxAge: 3600000,
+        });
+        setCookie("refreshToken", refreshToken, {
+            secure: true,
+            httpOnly: true,
+        });
+
+        const response = await post("/auth/sign-in", {});
         return response;
     } catch (error) {
         // console.error("Error during sign-in:", error);
@@ -46,3 +57,50 @@ export async function signOut() {
     await setCookie("customToken");
     await setCookie("idToken");
 }
+
+// async function refreshToken() {
+//     try {
+//         const response = await fetch("/auth/refresh-token", {
+//             method: "POST",
+//             credentials: "include", // Ensures cookies are sent
+//         });
+
+//         if (response.status === 200) {
+//             console.log("Token refreshed successfully.");
+//         } else {
+//             console.error("Failed to refresh token");
+//         }
+//     } catch (error) {
+//         console.error("Error refreshing token:", error);
+//     }
+// }
+
+// setInterval(() => {
+//     refreshToken();
+// }, 55 * 60 * 1000); // Refresh every 55 minutes
+
+async function refreshIdToken() {
+    try {
+        const response = await post("/auth/refresh-token", {});
+        return response;
+    } catch (error) {
+        // console.error("Error during sign-in:", error);
+        throw error;
+    }
+    // const user = auth.currentUser;
+    // if (user) {
+    //     try {
+    //         const newIdToken = await user.getIdToken(true);
+    //         setCookie("idToken", newIdToken, {
+    //             secure: true,
+    //             httpOnly: true,
+    //             maxAge: 3600000,
+    //         });
+    //     } catch (error) {
+    //         console.error("Error refreshing token:", error);
+    //         await signOut();
+    //     }
+    // }
+}
+
+setInterval(refreshIdToken, 50 * 60 * 1000);

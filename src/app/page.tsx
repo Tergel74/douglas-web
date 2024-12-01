@@ -14,5 +14,5 @@ export default function Home() {
         }
     }, [isLoggedIn]);
 
-    return <div className="h-[110vh] w-full">Solve</div>;
+    return <div className="w-full">Solve</div>;
 }

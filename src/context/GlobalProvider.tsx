@@ -12,7 +12,7 @@ const GlobalProvider = ({ children }: any) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        getCookie("customToken")
+        getCookie("idToken")
             .then((res) => {
                 if (res) {
                     setIsLoggedIn(true);

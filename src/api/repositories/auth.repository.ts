@@ -14,7 +14,7 @@ export async function signIn(email: string, password: string) {
         const idToken = await userCredential.user.getIdToken();
         // const refreshToken = userCredential.user.refreshToken;
 
-        setCookie("idToken", idToken, {
+        await setCookie("idToken", idToken, {
             secure: true,
             httpOnly: true,
             maxAge: 3600000,
